@@ -246,7 +246,7 @@ class All_Model extends Model
             'LE_month'      => $select['LE_month'],
             'LE_day'        => $select['LE_day']
         ];
-        $joinList = db('event as e')->join('user u','u.openId=e.openId')->field('e.openId')->field('avatarUrl')->field('nickName')->where('e.eventId',$eventId)->group('e.openId')->select();
+        $joinList = db('event as e')->join('user u','u.openId=e.openId')->field('e.openId')->field('avatarUrl')->field('nickName')->where('e.eventId',$eventId)->group('e.openId')->order('joinTime esc')->select();
         $data = compact('eventId','title','place','notes','remind','startYear','startMonth','startDay','startHour','startMinute','endYear','endMonth','endDay','endHour','endMinute','loop','openId','joinList');
         //时间显示字段
         if ($loopType == '永不') {
@@ -332,9 +332,10 @@ class All_Model extends Model
         $realStart = strtotime($startYear.'-'.$startMonth.'-'.$startDay.' '.$startHour.':'.$startMinute);
         $realEnd = strtotime($endYear.'-'.$endMonth.'-'.$endDay.' '.$endHour.':'.$endMinute);
         $admin = $openId;
+        $joinTime = time();
         if ($startStr == $endStr || (($startStr-86400) == $endStr)&&$endHour) {
             //不跨天事件
-            $data = compact('startStr','eventId','openId','title','place','UDL_unit','notes','loopType','UDL_unit','UDL_length','remind','remindTime','startYear','startMonth','startDay','startHour','startMinute','startTime','endYear','endMonth','endDay','endHour','endMinute','endTime','hour','loopEnd','LE_year','LE_month','LE_day','LE_time','realStart','realEnd','admin');
+            $data = compact('startStr','eventId','openId','title','place','UDL_unit','notes','loopType','UDL_unit','UDL_length','remind','remindTime','startYear','startMonth','startDay','startHour','startMinute','startTime','endYear','endMonth','endDay','endHour','endMinute','endTime','hour','loopEnd','LE_year','LE_month','LE_day','LE_time','realStart','realEnd','admin','joinTime');
             $bool = db('event')->insert($data);
             if ($bool == 1) {
                 $bool = true;
@@ -387,7 +388,8 @@ class All_Model extends Model
                         'acrossDay'     =>  'true',//不同
                         'realStart'     =>  $realStart,
                         'realEnd'       =>  $realEnd,
-                        'admin'         =>  $openId
+                        'admin'         =>  $openId,
+                        'joinTime'      =>  time()
                 ];
                     $bool = db('event')->insert($data);
                 }
@@ -446,7 +448,8 @@ class All_Model extends Model
                         'acrossDay'     =>  'true',//不同
                         'realStart'     =>  $realStart,
                         'realEnd'       =>  $realEnd,
-                        'admin'         =>  $openId
+                        'admin'         =>  $openId,
+                        'joinTime'      =>  time()
                 ];
                     $bool = db('event')->insert($data);
                 }
@@ -498,7 +501,8 @@ class All_Model extends Model
                         'acrossDay'     =>  'true',//不同
                         'realStart'     =>  $realStart,
                         'realEnd'       =>  $realEnd,
-                        'admin'         =>  $openId
+                        'admin'         =>  $openId,
+                        'joinTime'      =>  time()
                 ];
                     $bool = db('event')->insert($data);
                 }
@@ -681,9 +685,10 @@ class All_Model extends Model
         $LE_time = strtotime($LE_year.'-'.$LE_month.'-'.$LE_day);
         $realStart = strtotime($startYear.'-'.$startMonth.'-'.$startDay.' '.$startHour.':'.$startMinute);
         $realEnd = strtotime($endYear.'-'.$endMonth.'-'.$endDay.' '.$endHour.':'.$endMinute);
+        $joinTime = time();
         if ($startStr == $endStr || (($startStr-86400) == $endStr)&&$endHour) {
             //不跨天事件
-            $data = compact('startStr','eventId','openId','title','place','UDL_unit','notes','loopType','UDL_unit','UDL_length','remind','remindTime','startYear','startMonth','startDay','startHour','startMinute','startTime','endYear','endMonth','endDay','endHour','endMinute','endTime','hour','loopEnd','LE_year','LE_month','LE_day','LE_time','realStart','realEnd','admin');
+            $data = compact('startStr','eventId','openId','title','place','UDL_unit','notes','loopType','UDL_unit','UDL_length','remind','remindTime','startYear','startMonth','startDay','startHour','startMinute','startTime','endYear','endMonth','endDay','endHour','endMinute','endTime','hour','loopEnd','LE_year','LE_month','LE_day','LE_time','realStart','realEnd','admin','joinTime');
             $bool = db('event')->insert($data);
             if ($bool == 1) {
                 $bool = true;
@@ -736,7 +741,8 @@ class All_Model extends Model
                         'acrossDay'     =>  'true',//不同
                         'realStart'     =>  $realStart,
                         'realEnd'       =>  $realEnd,
-                        'admin'         =>  $admin
+                        'admin'         =>  $admin,
+                        'joinTime'      =>  time()
                 ];
                     $bool = db('event')->insert($data);
                 }
@@ -795,7 +801,8 @@ class All_Model extends Model
                         'acrossDay'     =>  'true',//不同
                         'realStart'     =>  $realStart,
                         'realEnd'       =>  $realEnd,
-                        'admin'         =>  $admin
+                        'admin'         =>  $admin,
+                        'joinTime'      =>  time()
                 ];
                     $bool = db('event')->insert($data);
                 }
@@ -847,7 +854,8 @@ class All_Model extends Model
                         'acrossDay'     =>  'true',//不同
                         'realStart'     =>  $realStart,
                         'realEnd'       =>  $realEnd,
-                        'admin'         =>  $admin
+                        'admin'         =>  $admin,
+                        'joinTime'      =>  time()
                 ];
                     $bool = db('event')->insert($data);
                 }
@@ -1004,7 +1012,7 @@ class All_Model extends Model
             'LE_month'      => $select['LE_month'],
             'LE_day'        => $select['LE_day']
         ];
-        $joinList = db('event as e')->join('user u','u.openId=e.openId')->field('e.openId')->field('avatarUrl')->field('nickName')->where('e.eventId',$eventId)->group('e.openId')->select();
+        $joinList = db('event as e')->join('user u','u.openId=e.openId')->field('e.openId')->field('avatarUrl')->field('nickName')->where('e.eventId',$eventId)->group('e.openId')->order('joinTime esc')->select();
         $data = compact('eventId','title','place','notes','remind','startYear','startMonth','startDay','startHour','startMinute','endYear','endMonth','endDay','endHour','endMinute','loop','ifJoin','joinList');
         $conflict = Db::query("select eventId,title,realStart,realEnd,acrossDay from event where openId='$openId' and loopType='永不' and eventId<>'$eventId' and (realStart<=$realEnd and realStart>=$realStart or realEnd<=$realEnd and realEnd>=$realStart or realStart<=$realStart and realEnd>=$realEnd) group by eventId order by realstart");
         if ($conflict) {
@@ -1077,6 +1085,7 @@ class All_Model extends Model
         foreach ($select as $key => $value) {
             $data = $value;
             $data['openId'] = $openId;
+            $data['joinTime'] = time();
             if ($key == 0) {
                 $data['remind'] = $remind;
                 $data['remindTime'] = $remindTime;
@@ -1116,7 +1125,7 @@ class All_Model extends Model
             foreach ($arrays as $array){
                 if(is_array($array)){
                     $key_arrays[] = $array[$sort_key];
-                }else{
+                }else{ 
                     return false;
                 }
             }

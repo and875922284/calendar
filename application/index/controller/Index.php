@@ -189,6 +189,9 @@ class Index extends Controller
         return json_encode($update,JSON_UNESCAPED_UNICODE);
     }
     public function test(){
-        echo '加一点毒蘑菇,再加一个旧鞋跟';
+        $joinList = db('event as e')->join('user u','u.openId=e.openId')->field('e.openId')->field('avatarUrl')->field('nickName')->where('e.eventId','1533721268159379_4178')->group('e.openId')->order('joinTime esc')->select();
+        $select = db('event')->where('eventId','1533721268159379_4178')->field('openId')->field('admin')->group('openId')->order('joinTime esc')->select();
+        dump($select);
+        dump($joinList);
     }
 }
